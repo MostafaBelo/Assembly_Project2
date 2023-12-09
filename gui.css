@@ -1,0 +1,311 @@
+* {
+	--bg: #1f2228;
+	--sectionBg: #2e3139;
+	--sectionBorder: #444455;
+	--textLight: #c4cbda;
+	--text: #bdc3d1;
+	--lineNumber: #717888;
+
+	color: var(--text);
+	font-family: "Courier New", Courier, monospace;
+	font-weight: 500;
+}
+
+.main {
+	background-color: var(--bg);
+
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 1%;
+
+	padding: 2rem;
+	box-sizing: border-box;
+}
+
+.section {
+	background-color: var(--sectionBg);
+	border: 2px solid var(--sectionBorder);
+	border-radius: 8px;
+
+	padding: 0.5rem 1rem;
+
+	box-sizing: border-box;
+
+	box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+		0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.code_regs_wrapper {
+	height: 55%;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	/* gap: 1%; */
+}
+
+.codeSection {
+	height: 100%;
+	width: 64.5%;
+
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.regsSection {
+	height: 100%;
+	width: 34.5%;
+
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.memory_details_wrapper {
+	height: 44%;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+
+	/* gap: 1rem; */
+}
+
+.memorySection {
+	height: 100%;
+	width: 64.5%;
+
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.detailsSection {
+	width: 34.5%;
+
+	display: flex;
+	flex-direction: column;
+	/* gap: 1rem; */
+}
+
+.sectionTitle {
+	color: var(--textLight);
+	font-weight: 600;
+	font-size: large;
+}
+
+.codeActionsWrapper {
+	background-color: var(--bg);
+	width: 100%;
+	/* height: 1.5rem; */
+	border-radius: 8px;
+	border: 1px solid var(--sectionBorder);
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.3rem;
+
+	padding: 0.3rem 1rem;
+
+	box-sizing: border-box;
+
+	box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+		0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.svgIcon {
+	height: 1.8rem;
+	aspect-ratio: 1;
+}
+
+.btn-img {
+	padding: 0.2rem;
+	box-sizing: border-box;
+	border-radius: 999px;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+
+	transition: all 10ms ease-in-out;
+}
+.btn-img:active {
+	background-color: var(--sectionBorder);
+
+	transform: scale(0.9);
+}
+
+.format-btn {
+	background-color: var(--text);
+	color: var(--sectionBg);
+
+	font-weight: 600;
+	padding: 0.2rem;
+	box-sizing: border-box;
+
+	border: 1px solid var(--lineNumber);
+	border-radius: 8px;
+
+	user-select: none;
+	cursor: pointer;
+}
+.format-btn.selected {
+	background-color: var(--sectionBorder);
+	color: var(--text);
+}
+
+.code-tabs {
+}
+.code-tab {
+	cursor: pointer;
+}
+.code-tab.selected {
+	border-bottom: 1px solid var(--textLight);
+}
+
+.codeArea {
+	flex: 1;
+	max-width: 100%;
+
+	display: flex;
+	flex-direction: row;
+	align-items: start;
+	overflow: auto;
+
+	position: relative;
+}
+
+.highlight-line {
+	width: 100%;
+	height: 1.2rem;
+	background-color: rgb(189, 195, 209, 0.5);
+	opacity: 0.5;
+
+	display: none;
+	position: absolute;
+}
+
+.grow-wrap {
+	flex: 1;
+	display: grid;
+}
+.grow-wrap::after {
+	content: attr(data-replicated-value) " ";
+	white-space: pre-wrap;
+	visibility: hidden;
+}
+.grow-wrap::after,
+.code {
+	flex: 1;
+	background: none;
+	border: none;
+	outline: none;
+	resize: none;
+	padding: 0px;
+
+	line-height: 1.2rem;
+	/* overflow: hidden; */
+
+	grid-area: 1 / 1 / 2 / 2;
+}
+
+.line-numbers {
+	width: 20px;
+	margin-right: 0.5rem;
+	text-align: right;
+}
+.line-numbers span {
+	counter-increment: linenumber;
+}
+.line-numbers span::before {
+	content: counter(linenumber);
+	display: block;
+	color: var(--lineNumber);
+
+	line-height: 1.2rem;
+}
+
+.registers-wrapper {
+	width: 100%;
+	flex: 1;
+	/* height: 100%; */
+	max-height: 100%;
+
+	overflow: auto;
+}
+.registers {
+	width: 100%;
+	height: 100%;
+
+	border-collapse: collapse;
+}
+
+.registers,
+.registerName,
+.registerValue {
+	text-align: center;
+}
+.registerValue:nth-of-type(2) {
+	border-right: 1px solid var(--sectionBorder);
+}
+
+table tr:nth-child(odd) {
+	background-color: var(--bg);
+}
+
+.memory {
+	height: 100%;
+	max-height: 100%;
+	overflow-y: scroll;
+
+	border-collapse: collapse;
+}
+
+.memoryActionsWrapper {
+	background-color: var(--bg);
+	width: 100%;
+	/* height: 1.5rem; */
+	border-radius: 8px;
+	border: 1px solid var(--sectionBorder);
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.3rem;
+
+	padding: 0.3rem 1rem;
+
+	box-sizing: border-box;
+
+	box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+		0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.memory,
+.memoryAddress,
+.memoryValue {
+	text-align: center;
+}
+.memoryValue {
+	border-left: 1px solid var(--sectionBorder);
+}
+
+.detailsTableData {
+	text-align: center;
+}
+
+.details-input {
+	text-align: center;
+
+	background: none;
+	border: none;
+	outline: none;
+}
