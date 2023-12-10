@@ -54,13 +54,12 @@ export class CACHE {
 		address = convertToBinary(address, this.address_size);
 		let offsetSize = Math.log2(this.L); // review this line
 		let indexSize = Math.log2(this.C / this.associativity);
-		let tagSize = this.address_size - d - i;
-
+		let tagSize = this.address_size - offsetSize - indexSize;
 		// get tag, index, and offset by slicing the address
 		//address = "tag index offset";
-		tag = address.slice(0, tagSize);
-		index = address.slice(tagSize, tagSize + indexSize);
-		offset = address.slice(tagSize + indexSize, this.address_size);
+		let tag = address.slice(0, tagSize);
+		let index = address.slice(tagSize, tagSize + indexSize);
+		let offset = address.slice(tagSize + indexSize, this.address_size);
 
 		// check index in mem of cache, and accesses++, and memory_time += access_time
 		if (this.isIndexInCache(index) && this.isvalid(index, tag)) {
@@ -103,6 +102,7 @@ export class CACHE {
 	init(S = 0, L = 0, associativity = 0) {
 		this.S = S;
 		this.L = L;
+		this.C = this.S / this.L;
 		this.associativity = associativity;
 
 		this.accesses = 0;
