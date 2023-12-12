@@ -56,7 +56,9 @@ export class Flow {
 		let s = this.ui.s;
 		let l = this.ui.l;
 		let associativity = this.ui.associativity;
+		let memorySize = this.ui.memorySize;
 		Cache.init(s, l, associativity);
+		Cache.setAddressSize(memorySize);
 		this.currentInstruction = 0;
 
 		this.ui.setCurrentTab("execution"); // implicitly calls update

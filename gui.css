@@ -67,6 +67,8 @@
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
+
+	overflow-y: auto;
 }
 
 .detailsSection {
@@ -232,8 +234,17 @@ table tr:nth-child(odd) {
 .memoryValue {
 	text-align: center;
 }
+.memoryAddress.address-highlight {
+	background-color: aqua;
+}
 .memoryValue {
 	border-left: 1px solid var(--sectionBorder);
+}
+.memoryValue.hit-highlight {
+	background-color: green;
+}
+.memoryValue.miss-highlight {
+	background-color: red;
 }
 
 .detailsTableData {

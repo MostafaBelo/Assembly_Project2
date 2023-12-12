@@ -6,7 +6,7 @@ export class CACHE {
 	S = 0; //size
 	L = 0; // cahe line size in block
 	C = 0; // number of cache lines
-	associativity = 0;
+	associativity = 1;
 
 	accesses = 0;
 	hits = 0;
@@ -15,9 +15,11 @@ export class CACHE {
 	missPenalty = 120;
 	hitPenalty = 1;
 
+	lastAccess = [-1, -1, false];
+
 	mem = {};
 
-	constructor(S = 0, L = 0, associativity = 0) {
+	constructor(S = 0, L = 0, associativity = 1) {
 		this.S = S;
 		this.L = L;
 		this.C = this.S / this.L;
@@ -27,18 +29,27 @@ export class CACHE {
 		this.missPenalty = missPenalty;
 		this.hitPenalty = hitPenalty;
 	}
-	isIndexInCache(index) {
-		index = parseInt(index, 2);
+	isIndexInCache(index, isBin = true) {
+		if (isBin) index = parseInt(index, 2);
 		return index in this.mem;
 	}
 	isvalid(index, tag) {
 		index = parseInt(index, 2);
-		for (let i = index; i < index + this.associativity; i++) {
-			if (i in this.mem && this.mem[i].valid && this.mem[i].tag === tag) {
+		for (let i = 0; i < this.associativity; i++) {
+			if (this.mem[index][i].valid && this.mem[index][i].tag === tag) {
 				return true;
 			}
 		}
 		return false;
+	}
+	getJ(index, tag) {
+		index = parseInt(index, 2);
+		for (let i = 0; i < this.associativity; i++) {
+			if (this.mem[index][i].valid && this.mem[index][i].tag === tag) {
+				return i;
+			}
+		}
+		return -1;
 	}
 	getRandomInt(min, max) {
 		// max is exclusive and min is inclusive
@@ -49,6 +60,23 @@ export class CACHE {
 		this.address_size = size;
 	}
 
+	get(index) {
+		if (index < 0 || index >= this.C / this.associativity) return undefined;
+		// if (entryAddress < 0 || entryAddress >= this.S) return undefined;
+
+		// let offset = entryAddress % this.L;
+		// let index = Math.floor(entryAddress / this.L);
+
+		if (this.isIndexInCache(index, false)) {
+			return this.mem[index];
+		} else {
+			let tmp = [];
+			for (let i = 0; i < this.associativity; i++) {
+				tmp.push({ valid: false, tag: 0 });
+			}
+			return tmp;
+		}
+	}
 	read(address) {
 		address = convertToBinary(address, this.address_size);
 		let offsetSize = Math.log2(this.L); // review this line
@@ -58,6 +86,7 @@ export class CACHE {
 		//address = "tag index offset";
 		let tag = address.slice(0, tagSize);
 		let index = address.slice(tagSize, tagSize + indexSize);
+		if (indexSize === 0) index = "0";
 		let offset = address.slice(tagSize + indexSize, this.address_size);
 		this.accesses++;
 
@@ -66,6 +95,8 @@ export class CACHE {
 			//offset = parseInt(offset, 2);
 			this.hits++;
 			this.memory_time += this.hitPenalty;
+			index = parseInt(index, 2);
+			this.lastAccess = [index, this.getJ(index, tag), true];
 		}
 		// if not found, write from RAM, and miss++
 		else {
@@ -95,18 +126,31 @@ export class CACHE {
 		this.miss++;
 		this.memory_time += this.missPenalty;
 		index = parseInt(index, 2);
-		for (let i = index; i < index + this.associativity; i++) {
-			if (!(i in this.mem)) {
-				this.mem[i] = { valid: true, tag: tag };
-				return;
+		if (this.isIndexInCache(index, false)) {
+			for (let i = 0; i < this.mem[index].length; i++) {
+				if (!this.mem[index][i].valid) {
+					this.mem[index][i] = { valid: true, tag: tag };
+					this.lastAccess = [index, i, false];
+					return;
+				}
 			}
+			// all filled, pick random index and write
+			let i = this.getRandomInt(0, this.associativity);
+			this.mem[index][i] = { valid: true, tag, tag };
+			this.lastAccess = [index, i, false];
+		} else {
+			// all empty, pick random index and write
+			this.mem[index] = [];
+			for (let i = 0; i < this.associativity; i++) {
+				this.mem[index].push({ valid: false, tag: 0 });
+			}
+			let i = this.getRandomInt(0, this.associativity);
+			this.mem[index][i] = { valid: true, tag, tag };
+			this.lastAccess = [index, i, false];
 		}
-		// if not found, pick random index and write
-		index = this.getRandomInt(index, index + this.associativity);
-		this.mem[index] = { valid: true, tag: tag };
 	}
 
-	init(S = 0, L = 0, associativity = 0) {
+	init(S = 0, L = 0, associativity = 1) {
 		this.S = S;
 		this.L = L;
 		this.C = this.S / this.L;
@@ -117,6 +161,8 @@ export class CACHE {
 		this.miss = 0;
 		this.memory_time = 0;
 		this.mem = {};
+
+		this.lastAccess = [-1, -1, false];
 	}
 }
 

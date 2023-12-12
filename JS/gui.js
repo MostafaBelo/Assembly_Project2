@@ -27,7 +27,10 @@ class UI {
 		hits: document.getElementById("hits-input"),
 		misses: document.getElementById("misses-input"),
 		amat: document.getElementById("amat-input"),
-		first_cache_address: document.getElementById("first-cache-address-input"),
+		highlight_cache_address: document.getElementById(
+			"highlight-cache-address-input"
+		),
+		memory_address_size: document.getElementById("memory-address-size-input"),
 	};
 
 	cache = undefined;
@@ -40,7 +43,7 @@ class UI {
 
 	// isPlaying = false;
 
-	firstAddress = 8000;
+	highlightAddress = -1;
 
 	currentTab = "code";
 
@@ -138,7 +141,8 @@ class UI {
 		this.details_inputs.hits.value = "0 (0%)";
 		this.details_inputs.misses.value = "0 (0%)";
 		this.details_inputs.amat.value = "0";
-		this.details_inputs.first_cache_address.value = 0;
+		this.details_inputs.highlight_cache_address.value = -1;
+		this.details_inputs.memory_address_size.value = 24;
 
 		this.details_inputs.s.oninput = (e) => {
 			let s = this.details_inputs.s.value;
@@ -156,9 +160,15 @@ class UI {
 			this.update();
 		};
 
-		this.details_inputs.first_cache_address.oninput = (e) => {
-			let address = this.details_inputs.first_cache_address.value;
-			this.firstAddress = parseInt(address);
+		this.details_inputs.highlight_cache_address.oninput = (e) => {
+			let address = this.details_inputs.highlight_cache_address.value;
+			this.highlightAddress = parseInt(address);
+			this.update();
+		};
+
+		this.details_inputs.memory_address_size.oninput = (e) => {
+			let memorySize = this.details_inputs.memory_address_size.value;
+			this.memorySize = parseInt(memorySize);
 			this.update();
 		};
 
@@ -215,38 +225,47 @@ class UI {
 		this.update();
 	}
 	updateCache() {
-		// TODO:
 		let cache = this.cache;
-		let address = this.firstAddress;
+		let lastAccess = cache.lastAccess;
 		// generate memory ui
 		let memText = `<tr>
-							<td class="memoryAddress">Address</td>
-							<td class="memoryValue">+3</td>
-							<td class="memoryValue">+2</td>
-							<td class="memoryValue">+1</td>
-							<td class="memoryValue">+0</td>
-						</tr>`;
-		for (let i = 0; i < 6; i++) {
-			// let vals = [
-			// 	mem.read1(address),
-			// 	mem.read1(address + 1),
-			// 	mem.read1(address + 2),
-			// 	mem.read1(address + 3),
-			// ];
-			// vals = [
-			// 	convertToHexAndBinary(vals[0], 8),
-			// 	convertToHexAndBinary(vals[1], 8),
-			// 	convertToHexAndBinary(vals[2], 8),
-			// 	convertToHexAndBinary(vals[3], 8),
-			// ];
-			// memText += `<tr>
-			// 				<td class="memoryAddress">${address}</td>
-			// 				<td class="memoryValue">${vals[3][format]}</td>
-			// 				<td class="memoryValue">${vals[2][format]}</td>
-			// 				<td class="memoryValue">${vals[1][format]}</td>
-			// 				<td class="memoryValue">${vals[0][format]}</td>
-			// 			</tr>`;
-			// address += 4;
+        <td class="memoryAddress">Block Address</td>`;
+		for (let i = 0; i < cache.associativity; i++) {
+			memText += `
+            <td class="memoryValue">Valid</td>
+            <td class="memoryValue">Tag</td>
+            `;
+		}
+		memText += `</tr>`;
+
+		if (
+			cache.S != 0 &&
+			cache.L != 0 &&
+			cache.C != 0 &&
+			cache.associativity != 0
+		) {
+			let height = cache.C / cache.associativity;
+			for (let i = 0; i < height; i++) {
+				memText += `<tr>
+                <td class="memoryAddress ${
+									i === this.highlightAddress && "address-highlight"
+								}">${i}</td>`;
+				let val = cache.get(i);
+				for (let j = 0; j < cache.associativity; j++) {
+					if (lastAccess[0] === i && lastAccess[1] === j) {
+						memText += `<td class="memoryValue ${
+							lastAccess[2] ? "hit-highlight" : "miss-highlight"
+						}">${val[j].valid}</td>`;
+						memText += `<td class="memoryValue ${
+							lastAccess[2] ? "hit-highlight" : "miss-highlight"
+						}">${val[j].tag}</td>`;
+					} else {
+						memText += `<td class="memoryValue">${val[j].valid}</td>`;
+						memText += `<td class="memoryValue">${val[j].tag}</td>`;
+					}
+				}
+				memText += `</tr>`;
+			}
 		}
 		this.memArea.innerHTML = `<tbody>${memText}</tbody>`;
 	}
