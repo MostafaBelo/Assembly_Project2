@@ -1,0 +1,20 @@
+1. Sat Dec 9, 2023, 11:53:46 +0200 - Commit 1
+  - Author: Mostafa
+  - Description: Implemented files, parser, and data conversions, similar to the last project.
+
+2. Sun Dec 10, 2023, 21:00:54 +0200 - Commit 2
+  - Authors: Raef & Dana
+  - Description: Completed data.js functionality.
+
+3. Sun Dec 10, 2023, 21:24:42  +0200- Commit 3
+  - Authors: Raef & Dana
+  - Description: Conducted bug fixes and tests.
+
+4. Tue Dec 12, 2023, 02:11:15 +0200 - Commit 4
+  - Author: Mostafa
+  - Description: Adjusted the UI to match changes, addressing missing cache UI updating.
+
+5. Tue Dec 12, 2023, 15:49:00 +0200 - Commit 5
+  - Author: Mostafa
+  - Description: Completed the updating of the cache in the UI, fixed bugs in the chaining of the cache data.js.
+
