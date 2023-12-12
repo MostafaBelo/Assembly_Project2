@@ -30,6 +30,8 @@ class UI {
 		highlight_cache_address: document.getElementById(
 			"highlight-cache-address-input"
 		),
+		cache_access_time: document.getElementById("cache-access-time-input"),
+		memory_access_time: document.getElementById("memory-access-time-input"),
 		memory_address_size: document.getElementById("memory-address-size-input"),
 	};
 
@@ -44,6 +46,8 @@ class UI {
 	// isPlaying = false;
 
 	highlightAddress = -1;
+	cache_access_time = 1;
+	memory_access_time = 120;
 
 	currentTab = "code";
 
@@ -142,6 +146,8 @@ class UI {
 		this.details_inputs.misses.value = "0 (0%)";
 		this.details_inputs.amat.value = "0";
 		this.details_inputs.highlight_cache_address.value = -1;
+		this.details_inputs.cache_access_time.value = 1;
+		this.details_inputs.memory_access_time.value = 120;
 		this.details_inputs.memory_address_size.value = 24;
 
 		this.details_inputs.s.oninput = (e) => {
@@ -163,6 +169,18 @@ class UI {
 		this.details_inputs.highlight_cache_address.oninput = (e) => {
 			let address = this.details_inputs.highlight_cache_address.value;
 			this.highlightAddress = parseInt(address);
+			this.update();
+		};
+
+		this.details_inputs.cache_access_time.oninput = (e) => {
+			let time = this.details_inputs.cache_access_time.value;
+			this.cache_access_time = parseInt(time);
+			this.update();
+		};
+
+		this.details_inputs.memory_access_time.oninput = (e) => {
+			let time = this.details_inputs.memory_access_time.value;
+			this.memory_access_time = parseInt(time);
 			this.update();
 		};
 

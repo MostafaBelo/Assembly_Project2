@@ -57,7 +57,10 @@ export class Flow {
 		let l = this.ui.l;
 		let associativity = this.ui.associativity;
 		let memorySize = this.ui.memorySize;
+		let hitPenalty = this.ui.cache_access_time;
+		let missPenalty = this.ui.memory_access_time;
 		Cache.init(s, l, associativity);
+		Cache.setPenalty(missPenalty, hitPenalty);
 		Cache.setAddressSize(memorySize);
 		this.currentInstruction = 0;
 
