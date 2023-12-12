@@ -42,8 +42,8 @@ export class CACHE {
 		}
 		return false;
 	}
-	getJ(index, tag) {
-		index = parseInt(index, 2);
+	getJ(index, tag, isBin = true) {
+		if (isBin) index = parseInt(index, 2);
 		for (let i = 0; i < this.associativity; i++) {
 			if (this.mem[index][i].valid && this.mem[index][i].tag === tag) {
 				return i;
@@ -96,7 +96,7 @@ export class CACHE {
 			//offset = parseInt(offset, 2);
 			this.hits++;
 			index = parseInt(index, 2);
-			this.lastAccess = [index, this.getJ(index, tag), true];
+			this.lastAccess = [index, this.getJ(index, tag, false), true];
 		}
 		// if not found, write from RAM, and miss++
 		else {
