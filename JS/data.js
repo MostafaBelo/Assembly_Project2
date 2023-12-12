@@ -89,12 +89,12 @@ export class CACHE {
 		if (indexSize === 0) index = "0";
 		let offset = address.slice(tagSize + indexSize, this.address_size);
 		this.accesses++;
+		this.memory_time += this.hitPenalty;
 
 		// check index in mem of cache, and accesses++, and memory_time += access_time
 		if (this.isIndexInCache(index) && this.isvalid(index, tag)) {
 			//offset = parseInt(offset, 2);
 			this.hits++;
-			this.memory_time += this.hitPenalty;
 			index = parseInt(index, 2);
 			this.lastAccess = [index, this.getJ(index, tag), true];
 		}
