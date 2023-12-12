@@ -242,8 +242,6 @@ class UI {
 			this.codeLineHighlight.style.display = "block";
 			this.codeArea.value = this.computeExecutionContent();
 			this.codeArea.placeholder = "";
-
-			// TODO: highlight the current
 		}
 
 		this.update();

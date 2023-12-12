@@ -1,6 +1,5 @@
 import { convertToBinary } from "./dataConversions.js";
 
-// TODO:
 export class CACHE {
 	address_size = 24;
 
@@ -60,17 +59,16 @@ export class CACHE {
 		let tag = address.slice(0, tagSize);
 		let index = address.slice(tagSize, tagSize + indexSize);
 		let offset = address.slice(tagSize + indexSize, this.address_size);
+		this.accesses++;
 
 		// check index in mem of cache, and accesses++, and memory_time += access_time
 		if (this.isIndexInCache(index) && this.isvalid(index, tag)) {
-			this.accesses++;
 			//offset = parseInt(offset, 2);
 			this.hits++;
 			this.memory_time += this.hitPenalty;
 		}
 		// if not found, write from RAM, and miss++
 		else {
-			this.accesses++;
 			this.write(tag, index, offset);
 		}
 
@@ -80,7 +78,16 @@ export class CACHE {
 		// if not found, write from RAM, miss++
 	}
 
+	getHitsRatio() {
+		if (this.accesses === 0) return 0;
+		return this.hits / this.accesses;
+	}
+	getMissessRatio() {
+		if (this.accesses === 0) return 0;
+		return this.miss / this.accesses;
+	}
 	getAMAT() {
+		if (this.accesses === 0) return 0;
 		return this.memory_time / this.accesses;
 	}
 
